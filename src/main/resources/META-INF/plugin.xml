@@ -1,19 +1,72 @@
+<!-- Copyright 2000-2020 JetBrains s.r.o. and other contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file. -->
+
 <idea-plugin>
-    <id>org.jetbrains.plugins.template</id>
-    <name>Template</name>
-    <vendor>JetBrains</vendor>
 
-    <!-- Product and plugin compatibility requirements -->
-    <!-- https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html -->
-    <depends>com.intellij.modules.platform</depends>
+  <!-- Unique id for this plugin. Must stay constant for the life of the plugin. -->
+  <id>org.intellij.sdk.codeInspection</id>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="org.jetbrains.plugins.template.services.MyApplicationService"/>
-        <projectService serviceImplementation="org.jetbrains.plugins.template.services.MyProjectService"/>
-    </extensions>
+  <!-- Text to display as name on Preferences/Settings | Plugin page -->
+  <name>Ravi - SDK: Comparing References Inspection Sample</name>
 
-    <applicationListeners>
-        <listener class="org.jetbrains.plugins.template.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
+  <!-- Requires the Go plugin -->
+  <depends>org.jetbrains.plugins.go</depends>
+  <!-- Requires the platform module to distinguish it from a legacy plugin -->
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.go</depends>
+
+  <!-- Text to display as description on Preferences/Settings | Plugin page -->
+  <description>
+    <![CDATA[
+      Demonstrates implementing a Local Inspection Tool.<br> Adds entries to
+      <b>Preferences | Editor | Inspections | Java | Probable Bugs</b>.
+    ]]>
+  </description>
+  <change-notes>
+    <![CDATA[
+      <ul>
+        <li><b>2.0.0</b> Convert to Gradle-based plugin.</li>
+        <li><b>1.1.0</b> Refactor resources, register this inspection.</li>
+        <li><b>1.0.0</b> Release 2018.3 and earlier.</li>
+      </ul>
+    ]]>
+  </change-notes>
+
+  <!-- Text to display as company information on Preferences/Settings | Plugin page -->
+  <vendor url="https://plugins.jetbrains.com">IntelliJ Platform SDK</vendor>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!--
+      Extend the IntelliJ Platform local inspection type, and connect it to the implementation class in this plugin.
+      <localInspection> type element is applied within the scope of a file under edit.
+      It is preferred over <inspectionToolProvider>
+        @see intellij.platform.resources.LangExtensionPoints
+        @see com.intellij.codeInspection.InspectionProfileEntry
+
+      Attributes:
+        language= Language ID
+        shortName= Not specified, will be computed by the underlying implementation classes.
+        displayName= The string to be shown in the Preferences | Editor | Inspections panel
+            The displayName gets registered to identify this inspection.
+            Can be localized using key= and bundle= attributes instead.
+        groupPath= Defines the outermost grouping for this inspection in
+            the Preferences | Editor | Inspections panel. Not localized.
+        groupBundle= Name of *.bundle file to translate groupKey.
+            In this case reuse an IntelliJ Platform bundle file from intellij.platform.resources.en
+        groupKey= Key to use for translation subgroup name using groupBundle file.
+            In this case reuse the IntelliJ Platform subcategory "Probable bugs"
+        enabledByDefault= Inspection state when Inspections panel is created.
+        level= The default level of error found by this inspection, e.g. INFO, ERROR, etc.
+            @see com.intellij.codeHighlighting.HighlightDisplayLevel
+        implementationClass= FQN of inspection implementation
+    -->
+    <localInspection language="JAVA"
+                     displayName="Ravi - SDK: '==' or '!=' used instead of 'equals()'"
+                     groupPath="Java"
+                     groupBundle="messages.InspectionsBundle"
+                     groupKey="group.names.probable.bugs"
+                     enabledByDefault="true"
+                     level="WARNING"
+                     implementationClass="org.intellij.sdk.codeInspection.ComparingReferencesInspection"/>
+  </extensions>
+
 </idea-plugin>
