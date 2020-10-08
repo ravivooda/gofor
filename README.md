@@ -1,6 +1,8 @@
 # Comparing References Inspection Sample [![JetBrains IntelliJ Platform SDK Docs](https://jb.gg/badges/docs.svg)][docs]
 *Reference: [Code Inspections in IntelliJ SDK Docs][docs:code_inspections]*
 
+Ravi to update the file
+
 ## Quickstart
 
 Comparing References Inspection Sample demonstrates the implementation of the [Code Inspections][docs:code_inspections] feature for Java classes.
