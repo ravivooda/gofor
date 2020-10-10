@@ -59,14 +59,14 @@
             @see com.intellij.codeHighlighting.HighlightDisplayLevel
         implementationClass= FQN of inspection implementation
     -->
-    <localInspection language="JAVA"
+    <localInspection language="go"
                      displayName="Ravi - SDK: '==' or '!=' used instead of 'equals()'"
-                     groupPath="Java"
+                     groupPath="Go"
                      groupBundle="messages.InspectionsBundle"
                      groupKey="group.names.probable.bugs"
                      enabledByDefault="true"
                      level="WARNING"
-                     implementationClass="org.intellij.sdk.codeInspection.ComparingReferencesInspection"/>
+                     implementationClass="org.intellij.sdk.codeInspection.ForChecker"/>
   </extensions>
 
 </idea-plugin>

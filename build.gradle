@@ -28,7 +28,11 @@ dependencies {
 intellij {
   version = '2020.1.4'
   type = 'IU'
-  plugins = ['java','org.jetbrains.plugins.go:201.7846.76.189']
+  plugins = [
+          'java',
+          'org.jetbrains.plugins.go:201.7846.76.189',
+          'PsiViewer:201.6251.22-EAP-SNAPSHOT.1'
+  ]
 }
 
 runIde {
