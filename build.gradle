@@ -3,10 +3,13 @@
 plugins {
   id 'java'
   id 'org.jetbrains.intellij' version '0.5.0'
+  id 'org.jetbrains.changelog' version '0.6.2'
 }
 
 group 'org.intellij.sdk'
 version '2.0.0'
+
+apply plugin: 'org.jetbrains.changelog'
 
 sourceCompatibility = 1.8
 
@@ -30,9 +33,22 @@ intellij {
   type = 'IU'
   plugins = [
           'java',
-          'org.jetbrains.plugins.go:201.7846.76.189',
-          'PsiViewer:201.6251.22-EAP-SNAPSHOT.1'
+          'org.jetbrains.plugins.go:201.7846.76.189'
   ]
+  patchPluginXml {
+    changeNotes({ changelog.getUnreleased().toHTML() })
+  }
+}
+
+changelog {
+  version = "${project.version}"
+  path = "${project.projectDir}/CHANGELOG.md"
+  header = { "[${project.version}] - ${date()}" }
+  headerParserRegex = ~/\d+\.\d+/
+  itemPrefix = "-"
+  keepUnreleasedSection = true
+  unreleasedTerm = "[Unreleased]"
+  groups = ["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]
 }
 
 runIde {
