@@ -1,4 +1,4 @@
-package org.intellij.sdk.codeInspection;
+package org.intellij.sdk.forchecker;
 
 import com.goide.inspections.core.GoInspectionBase;
 import com.goide.inspections.core.GoProblemsHolder;
@@ -15,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ForChecker extends GoInspectionBase {
-    private static final Logger LOG = Logger.getInstance(ForChecker.class);
+public class RangeAssignCopyChecker extends GoInspectionBase {
+    private static final Logger LOG = Logger.getInstance(RangeAssignCopyChecker.class);
     public static final String PASSING_REFERENCE_OF_COPIED_RANGE_ELEMENT = "Passing reference of copied range element";
 
     @Override
@@ -27,6 +27,7 @@ public class ForChecker extends GoInspectionBase {
             @Override
             public void visitCallExpr(@NotNull GoCallExpr o) {
                 super.visitCallExpr(o);
+//                InspectionsBundle.message("Passing reference of copied range element");
                 PsiFile file = o.getContainingFile();
 
                 GoForStatement forStatement = PsiTreeUtil.getParentOfType(o, GoForStatement.class);

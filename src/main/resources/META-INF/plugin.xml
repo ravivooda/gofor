@@ -3,70 +3,44 @@
 <idea-plugin>
 
   <!-- Unique id for this plugin. Must stay constant for the life of the plugin. -->
-  <id>org.intellij.sdk.codeInspection</id>
+  <id>org.intellij.sdk.forchecker</id>
 
   <!-- Text to display as name on Preferences/Settings | Plugin page -->
-  <name>Ravi - SDK: Comparing References Inspection Sample</name>
+  <name>Go Range Copy Editing</name>
 
   <!-- Requires the Go plugin -->
   <depends>org.jetbrains.plugins.go</depends>
   <!-- Requires the platform module to distinguish it from a legacy plugin -->
   <depends>com.intellij.modules.platform</depends>
-  <depends>com.intellij.modules.go</depends>
 
   <!-- Text to display as description on Preferences/Settings | Plugin page -->
   <description>
     <![CDATA[
-      Demonstrates implementing a Local Inspection Tool.<br> Adds entries to
-      <b>Preferences | Editor | Inspections | Java | Probable Bugs</b>.
+      Looks up if assigned variable in a range clause is used as an editable <br>
+      Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
     ]]>
   </description>
   <change-notes>
     <![CDATA[
       <ul>
-        <li><b>2.0.0</b> Convert to Gradle-based plugin.</li>
-        <li><b>1.1.0</b> Refactor resources, register this inspection.</li>
-        <li><b>1.0.0</b> Release 2018.3 and earlier.</li>
+        <li><b>0.0.2</b> Checks for function usages</li>
+        <li><b>0.0.1</b> Scaffolding.</li>
       </ul>
     ]]>
   </change-notes>
 
   <!-- Text to display as company information on Preferences/Settings | Plugin page -->
-  <vendor url="https://plugins.jetbrains.com">IntelliJ Platform SDK</vendor>
+  <vendor url="https://github.com/ravivooda/gofor/wiki">Go Editables</vendor>
 
   <extensions defaultExtensionNs="com.intellij">
-    <!--
-      Extend the IntelliJ Platform local inspection type, and connect it to the implementation class in this plugin.
-      <localInspection> type element is applied within the scope of a file under edit.
-      It is preferred over <inspectionToolProvider>
-        @see intellij.platform.resources.LangExtensionPoints
-        @see com.intellij.codeInspection.InspectionProfileEntry
-
-      Attributes:
-        language= Language ID
-        shortName= Not specified, will be computed by the underlying implementation classes.
-        displayName= The string to be shown in the Preferences | Editor | Inspections panel
-            The displayName gets registered to identify this inspection.
-            Can be localized using key= and bundle= attributes instead.
-        groupPath= Defines the outermost grouping for this inspection in
-            the Preferences | Editor | Inspections panel. Not localized.
-        groupBundle= Name of *.bundle file to translate groupKey.
-            In this case reuse an IntelliJ Platform bundle file from intellij.platform.resources.en
-        groupKey= Key to use for translation subgroup name using groupBundle file.
-            In this case reuse the IntelliJ Platform subcategory "Probable bugs"
-        enabledByDefault= Inspection state when Inspections panel is created.
-        level= The default level of error found by this inspection, e.g. INFO, ERROR, etc.
-            @see com.intellij.codeHighlighting.HighlightDisplayLevel
-        implementationClass= FQN of inspection implementation
-    -->
     <localInspection language="go"
-                     displayName="Ravi - SDK: '==' or '!=' used instead of 'equals()'"
+                     displayName="SDK: editing assigned variable in 'range'"
                      groupPath="Go"
                      groupBundle="messages.InspectionsBundle"
                      groupKey="group.names.probable.bugs"
                      enabledByDefault="true"
                      level="WARNING"
-                     implementationClass="org.intellij.sdk.codeInspection.ForChecker"/>
+                     implementationClass="org.intellij.sdk.forchecker.RangeAssignCopyChecker"/>
   </extensions>
 
 </idea-plugin>
