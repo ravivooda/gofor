@@ -93,28 +93,25 @@ public class RangeAssignCopyChecker extends GoInspectionBase {
         List<GoExpression> expressionList = o.getArgumentList().getExpressionList();
         for (GoExpression goExpression : expressionList) {
             if (goExpression.isConstant()) continue;
+            if (!(goExpression instanceof GoUnaryExpr)) continue;
 
-            LOG.warn("visitCallExpr: expression: " + goExpression + ", text: " + goExpression.getText());
+            GoUnaryExpr unaryExpr = (GoUnaryExpr) goExpression;
+            PsiElement operator = unaryExpr.getOperator();
+            if (operator == null || !operator.getText().equalsIgnoreCase("&")) continue;
 
-            if (goExpression instanceof GoUnaryExpr) {
-                GoUnaryExpr unaryExpr = (GoUnaryExpr) goExpression;
-                PsiElement operator = unaryExpr.getOperator();
-                if (operator == null || !operator.getText().equalsIgnoreCase("&")) continue;
+            ArrayList<PsiElement> referenceElements = getReferenceElements(goExpression);
+            for (PsiElement referenceElement : referenceElements) {
+                // Check with current reference
+                if (areEqualReferences(assignedVariable, referenceElement)) {
+                    holder.registerProblem(referenceElement, () -> PASSING_REFERENCE_OF_COPIED_RANGE_ELEMENT);
+                    didFindProblems = true;
+                }
 
-                ArrayList<PsiElement> referenceElements = getReferenceElements(goExpression);
-                for (PsiElement referenceElement : referenceElements) {
-                    // Check with current reference
-                    if (areEqualReferences(assignedVariable, referenceElement)) {
-                        holder.registerProblem(referenceElement, () -> PASSING_REFERENCE_OF_COPIED_RANGE_ELEMENT);
-                        didFindProblems = true;
-                    }
-
-                    // Check with parent reference; but register problem as future
-                    PsiElement parentResolvedElement = getParentPsiElement(referenceElement);
-                    if (parentResolvedElement != null && areEqualReferences(assignedVariable, parentResolvedElement)) {
-                        holder.registerProblem(referenceElement, () -> PASSING_REFERENCE_OF_COPIED_RANGE_ELEMENT);
-                        didFindProblems = true;
-                    }
+                // Check with parent reference; but register problem as future
+                PsiElement parentResolvedElement = getParentPsiElement(referenceElement);
+                if (parentResolvedElement != null && areEqualReferences(assignedVariable, parentResolvedElement)) {
+                    holder.registerProblem(referenceElement, () -> PASSING_REFERENCE_OF_COPIED_RANGE_ELEMENT);
+                    didFindProblems = true;
                 }
             }
         }
