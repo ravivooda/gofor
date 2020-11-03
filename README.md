@@ -25,7 +25,7 @@ func main() {
 
 below outlines the output in Go, Swift, Objective-C, Java (keeping the semantics same)
 |  Language  | Output                     |
-| ---------- |---------------------------:|
+| ---------- |:---------------------------|
 | **Go**     |  [{1} {2} {3} {4}]         |
 | Swift      |  [{100} {100} {100} {100}] |
 | Java       |  [{100} {100} {100} {100}] |
@@ -43,7 +43,7 @@ This plugin tries to catch such use cases and highlight them for the developer t
 1. Assigned variable is predeclared before the range clause
 2. Direct assignment of the struct's properties
 
-\* please see issue for more
+\* please see issues for more
 
 # Output
 
