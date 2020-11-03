@@ -3,6 +3,7 @@ package org.intellij.sdk.forchecker;
 import com.goide.inspections.core.GoInspectionBase;
 import com.goide.inspections.core.GoProblemsHolder;
 import com.goide.psi.*;
+import com.goide.psi.impl.GoPsiImplUtil;
 import com.intellij.codeInspection.LocalInspectionToolSession;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
@@ -13,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -51,24 +51,16 @@ public class RangeAssignCopyChecker extends GoInspectionBase {
     }
 
     private void evaluateMethodInvocations(GoCallExpr o, PsiElement assignedVariable, GoProblemsHolder holder) {
-        LOG.warn("Ravi: " + o.getText());
         GoExpression expression = o.getExpression();
-        @NotNull Collection<PsiReference> search = ReferencesSearch.search(assignedVariable).findAll();
-        LOG.warn("Reference usages: "+ Arrays.toString(search.stream().map(psiReference -> psiReference.getElement().getTextRange().getStartOffset()).toArray()));
-        if (!(expression instanceof GoReferenceExpression)) {
-            return;
-        }
-        GoReferenceExpression referenceExpression = (GoReferenceExpression) expression;
+        if (!(expression instanceof GoReferenceExpression)) return;
+        if (!isReceiverPointer(o)) return;
 
+        GoReferenceExpression referenceExpression = (GoReferenceExpression) expression;
         PsiElement qualifier = referenceExpression.getFirstChild();
         if (qualifier == null) return;
-        LOG.warn("Ref Expression qualifier: " + qualifier.getText());
-        LOG.warn("Ref Expression qualifier parent: " + qualifier.getParent().getText());
-
-        PsiElement identifier = referenceExpression.getIdentifier();
-        LOG.warn("Ref Expression identifier: " + identifier.getText());
 
         boolean foundProblems = false;
+        @NotNull Collection<PsiReference> search = ReferencesSearch.search(assignedVariable).findAll();
         for (PsiReference psiReference : search) {
             if (areEqualReferences(psiReference.getElement(), qualifier)) {
                 holder.registerProblem(qualifier, () -> CALLING_MODIFYING_METHOD_ON_COPIED_RANGE_ELEMENT);
@@ -77,9 +69,22 @@ public class RangeAssignCopyChecker extends GoInspectionBase {
         }
 
         if (foundProblems) {
-            LOG.warn("Checking if: ");
             holder.registerProblem(assignedVariable, () -> CALLING_MODIFYING_METHOD_ON_COPIED_RANGE_ELEMENT);
         }
+    }
+
+    private boolean isReceiverPointer(GoCallExpr o) {
+        GoSignatureOwner goSignatureOwner = GoPsiImplUtil.resolveCall(o);
+        if (goSignatureOwner == null) return false;
+
+        if (!(goSignatureOwner instanceof GoMethodDeclaration)) return false;
+        GoMethodDeclaration methodDeclaration = (GoMethodDeclaration) goSignatureOwner;
+        GoReceiver methodDeclarationReceiver = methodDeclaration.getReceiver();
+        if (methodDeclarationReceiver == null) return false;
+        GoType type = methodDeclarationReceiver.getType();
+        if (type == null) return false;
+
+        return type instanceof GoPointerType;
     }
 
     private void evaluateReferenceIssues(@NotNull GoCallExpr o, PsiElement assignedVariable, @NotNull GoProblemsHolder holder) {
