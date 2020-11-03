@@ -122,7 +122,12 @@ public class RangeAssignCopyChecker extends GoInspectionBase {
     }
 
     private boolean areEqualReferences(PsiElement assignedVariable, PsiElement referenceElement) {
-        return assignedVariable.getContainingFile().getManager().areElementsEquivalent(referenceElement, assignedVariable);
+        if (assignedVariable.getContainingFile().getManager().areElementsEquivalent(referenceElement, assignedVariable)) return true;
+        PsiElement assignedVariableDeclaration = assignedVariable.getReference() != null ? assignedVariable.getReference().getElement() : null;
+        if (assignedVariableDeclaration != null) {
+            assignedVariableDeclaration.getContainingFile().getManager().areElementsEquivalent(referenceElement, assignedVariableDeclaration);
+        }
+        return false;
     }
 
     @Nullable

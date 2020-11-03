@@ -1,5 +1,7 @@
-# Comparing References Inspection Sample [![JetBrains IntelliJ Platform SDK Docs](https://jb.gg/badges/docs.svg)][docs]
+# Comparing References Inspection Sample [![JetBrains IntelliJ Platform SDK Docs](https://jb.gg/badges/docs.svg)][docs] 
 *Reference: [Code Inspections in IntelliJ SDK Docs][docs:code_inspections]*
+
+Gradle Scan: https://scans.gradle.com/s/vywyvtekrzqfg <img src="https://gradle.com/wp-content/themes/fuel/assets/img/branding/gradle-elephant-icon-white.svg" alt="Gradle Scan" width="50">
 
 ## Quickstart
 
