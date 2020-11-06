@@ -18,9 +18,38 @@ repositories {
 }
 
 test {
+  apply plugin: 'jacoco'
+  finalizedBy jacocoTestReport
   // Set idea.home.path to the absolute path to the intellij-community source
   // on your local machine.
   systemProperty "idea.home.path", "/Users/jhake/Documents/source/comm"
+}
+
+jacocoTestReport {
+  dependsOn test // tests are required to run before generating the report
+  finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+  violationRules {
+    rule {
+      limit {
+        minimum = 0.8
+      }
+    }
+
+    rule {
+      enabled = false
+      element = 'CLASS'
+      includes = ['org.gradle.*']
+
+      limit {
+        counter = 'LINE'
+        value = 'TOTALCOUNT'
+        maximum = 0.3
+      }
+    }
+  }
 }
 
 dependencies {
@@ -31,10 +60,12 @@ dependencies {
 intellij {
   version = '2020.1.4'
   type = 'IU'
-  plugins = [
-          'java',
-          'org.jetbrains.plugins.go:201.7846.76.189'
-  ]
+  build {
+    plugins = [
+            'java',
+            'org.jetbrains.plugins.go:201.7846.76.189'
+    ]
+  }
   patchPluginXml {
     changeNotes({ changelog.getUnreleased().toHTML() })
   }
@@ -52,6 +83,7 @@ changelog {
 }
 
 runIde {
+  //apply plugin: 'PsiViewer:201.6251.22-EAP-SNAPSHOT.1'
   ideDirectory '/Applications/GoLand.app/Contents'
 }
 

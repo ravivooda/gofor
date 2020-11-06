@@ -1,26 +1,60 @@
-# Comparing References Inspection Sample [![JetBrains IntelliJ Platform SDK Docs](https://jb.gg/badges/docs.svg)][docs]
-*Reference: [Code Inspections in IntelliJ SDK Docs][docs:code_inspections]*
+# Go For - Range Copy - Editing 
+A [GoLand](https://www.jetbrains.com/go/) plugin to help developers detect an edge case: editing a range assigned variable.
 
-## Quickstart
+# Motivation
+Go dictates range clause to copy collection before iterating.
 
-Comparing References Inspection Sample demonstrates the implementation of the [Code Inspections][docs:code_inspections] feature for Java classes.
+Consider the following go code
+```go
+package main
+import "fmt"
+type Editable struct{ i int }
 
-The plugin inspects your Java code and highlights any fragments containing the comparison of two `String` or `Date` variables.
-If such a check finds a comparison using the `==` or !`=` operators instead of the `.equals()` method, the plugin proposes a *quick-fix* action.
+func pumpUp(e *Editable)  {
+ e.i = 100
+}
 
-### Extension Points
+func main() {
+ es := []Editable { { i : 1 }, { i : 2 }, { i : 3 }, { i : 4 } }
+ for _, e := range es {
+ 	pumpUp(&e)
+ }
+ fmt.Printf("%v", es)
+}
+```
 
-| Name                           | Implementation                                                      | Extension Point Class                                    |
-| ------------------------------ | ------------------------------------------------------------------- | -------------------------------------------------------- |
-| `com.intellij.localInspection` | [ComparingReferencesInspection][file:ComparingReferencesInspection] | [AbstractBaseJavaLocalInspectionTool][sdk:AbstractBJLIT] |
+below outlines the output in Go, Swift, Objective-C, Java (keeping the semantics same)
+|  Language  | Output                     |
+| ---------- |:---------------------------|
+| **Go**     |  [{1} {2} {3} {4}]         |
+| Swift      |  [{100} {100} {100} {100}] |
+| Java       |  [{100} {100} {100} {100}] |
+| Objective-C|  [{100} {100} {100} {100}] |
+
+This plugin tries to catch such use cases and highlight them for the developer to reconsider the logic
+
+## Supported
+
+1. Detect usages of pointer references of assigned variable in a for block
+2. Detect editable method references of assigned variable in the block
+
+## To be supported
+
+1. Assigned variable is predeclared before the range clause
+2. Direct assignment of the struct's properties
+
+\* please see issues for more
+
+# Output
+
+![Highlighted Text][file:highlighted_output.png]
+
+### References
+Assigned Variable = e in the above go for block
+
+Gradle Scan: https://scans.gradle.com/s/vywyvtekrzqfg <img src="https://gradle.com/wp-content/themes/fuel/assets/img/branding/gradle-elephant-icon-white.svg" alt="Gradle Scan" width="50">
 
 *Reference: [Plugin Extension Points in IntelliJ SDK Docs][docs:ep]*
 
-
-[docs]: https://www.jetbrains.org/intellij/sdk/docs
-[docs:code_inspections]: https://www.jetbrains.org/intellij/sdk/docs/tutorials/code_inspections.html
 [docs:ep]: https://www.jetbrains.org/intellij/sdk/docs/basics/plugin_structure/plugin_extensions.html
-
-[file:ComparingReferencesInspection]: ./src/main/java/org/intellij/sdk/codeInspection/ComparingReferencesInspection.java
-
-[sdk:AbstractBJLIT]: upsource:///java/java-analysis-api/src/com/intellij/codeInspection/AbstractBaseJavaLocalInspectionTool.java
+[file:highlighted_output.png]: .github/readme/output.png
